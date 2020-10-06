@@ -1,11 +1,17 @@
+import java.util.Random;
+
 public class MultiHasing {
     public static final int numOfEntries = 1000; 
     public static final int numOfHashFunction = 3; 
 
     public static int[] hashTable = new int[numOfEntries];
-    public static int[] hashModNums = {737, 27522, 84569};
+    public static int[] hashModNums = {743, 22, 347};
+
+    public static Random rand;
 
     public static void main(String[] args) {
+
+        
 
         initHashTable(hashTable);
 
@@ -22,8 +28,13 @@ public class MultiHasing {
     }
 
     public static void addInTable(int[] hashTable) {
+        rand = new Random();
         for(int i = 0; i < numOfEntries; i++) {
-            int element = (int) (Math.random()*1000);
+            
+            rand.setSeed(i);
+
+            int element = rand.nextInt(1000000);
+
             int[] hashValues = new int[numOfHashFunction];
 
             for(int j = 0; j < hashValues.length; j++) {
