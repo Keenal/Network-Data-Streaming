@@ -23,6 +23,7 @@ public class CuckooHashing {
                 hashTable[hashF1] = inputElements[i];
             }
 
+       //     System.out.println("test");
 
             /*
             hashF1 = inputElements[i] ^ arrayS[0];
@@ -32,6 +33,8 @@ public class CuckooHashing {
 
         //    System.out.println("i: " + inputElements[i] + " h1: " + 
         //                        hashF1 + " h2: " + hashF2 + " h3: " + hashF3);
+
+        printHashTable(hashTable);
 
         }
 
@@ -43,5 +46,15 @@ public class CuckooHashing {
         for(int i = 0; i < hashTable.length; i++) {
             hashTable[i] = Integer.MIN_VALUE;
         }
+    }
+
+    public static void printHashTable(int[] hashTable) {
+        int count = 0;
+        for(int i = 0; i < hashTable.length; i++) {
+            System.out.println(hashTable[i]);
+            count++;
+        }
+
+        System.out.println("Number of flows: " + count);
     }
 }
