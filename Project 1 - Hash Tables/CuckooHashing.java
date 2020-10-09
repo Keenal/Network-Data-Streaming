@@ -9,19 +9,19 @@ public class CuckooHashing {
     public static int[] hashValues = new int[numOfHashFunction];
     
     public static int counter = 0;
-    public static int counterNotPlaced = 0;
-    public static int tracker = 1;
-    static int k = 0;
+    public static int rec = 0;
+    public static int k = 0;
+    public static int cuckooStepLimit = 2;
+    
 
     public static Random rand;
 
-    
     public static void main(String[] args) {
 
 
         initHashTable(hashTable);
         
-        addValues2Table(hashTable);
+        generateNums4Table(hashTable);
 
         printHashTable(hashTable);
 
@@ -33,7 +33,7 @@ public class CuckooHashing {
         }
     }
 
-    public static void addValues2Table(int[] hashTable) {
+    public static void generateNums4Table(int[] hashTable) {
         rand = new Random();
         for(int i = 0; i < numOfEntries; i++) {
             rand.setSeed(i);
@@ -42,11 +42,12 @@ public class CuckooHashing {
         }
     }
 
-    public static void cuckoo(int element, int[] hashTable, int last, int count) {
+    public static void cuckoo(int element, int[] hashTable, int idx, int cuckooSteps) {
         
-            if(count == 2) {
-                tracker = 1;
-                counterNotPlaced++;
+        boolean checker = false;
+
+            if(cuckooSteps == cuckooStepLimit) {
+                rec = 0;
             }
 
             for(int j = 0; j < hashValues.length; j++) {
@@ -56,34 +57,32 @@ public class CuckooHashing {
                 }
             }
 
-            int flag = 0;
-
             for(int j = 0; j < hashValues.length; j++) {
                 
                 if(hashTable[hashValues[j]] == -999999999) {
                     hashTable[hashValues[j]] = element;
-                    flag = 1;
-                    tracker = 0;
-                    count++;
+                    checker = true;
+                    rec = -1;
+                    cuckooSteps++;
                     break;
                 }
             }
 
-            if(flag == 0) {
-                int temp = -1;
+            if(checker == false) {
+                int flowPlaceHolder = -1;
                 while(k < 3) {
-                    if(hashValues[k] != last) {
-                        temp = hashTable[hashValues[k]];
+                    if(hashValues[k] != idx) {
+                        flowPlaceHolder = hashTable[hashValues[k]];
                         hashTable[hashValues[k]] = element;
                         counter++;
-                        tracker = 0;
-                        cuckoo(temp,hashTable, hashValues[k], count + 1);
+                        rec = -1;
+                        cuckoo(flowPlaceHolder, hashTable, hashValues[k], cuckooSteps + 1);
                     }
                     k++;
-                    if(tracker == 0) {
+                    if(rec == -1) {
                         break;
                     }
-                    if(hashTable[hashValues[0]] == temp || hashTable[hashValues[1]] == temp || hashTable[hashValues[2]] == temp) {
+                    if(hashTable[hashValues[0]] == flowPlaceHolder || hashTable[hashValues[1]] == flowPlaceHolder || hashTable[hashValues[2]] == flowPlaceHolder) {
                         break;
                     }
                 }
