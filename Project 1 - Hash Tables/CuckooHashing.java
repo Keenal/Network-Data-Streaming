@@ -46,10 +46,12 @@ public class CuckooHashing {
         
         boolean checker = false;
 
+            
             if(cuckooSteps == cuckooStepLimit) {
                 rec = 0;
             }
 
+            // calculates 3 hash values per element
             for(int j = 0; j < hashValues.length; j++) {
                 hashValues[j] = (element ^ hashModNums[j]) % hashTable.length; 
                 if(hashTable[hashValues[j]] == element) {
@@ -57,6 +59,7 @@ public class CuckooHashing {
                 }
             }
 
+            // if a spot is empty in the array, it places the element there
             for(int j = 0; j < hashValues.length; j++) {
                 
                 if(hashTable[hashValues[j]] == -999999999) {
@@ -86,7 +89,7 @@ public class CuckooHashing {
                         break;
                     }
                 }
-    }
+            }
         k = 0;
 
     }
