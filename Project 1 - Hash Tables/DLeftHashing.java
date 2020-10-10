@@ -6,7 +6,7 @@ public class DLeftHashing {
     public static final int numOfSegmentInterval = numOfEntries / 4; 
 
     public static int[] hashTable = new int[numOfEntries];
-    public static int[] hashModNums = {743, 22, 347, 543};
+    public static int[] hashModNums = {6163, 81, 51, 53};
 
     private static Random rand;
     
@@ -34,9 +34,9 @@ public class DLeftHashing {
         rand = new Random();
         for(int i = 0; i < numOfEntries; i++) {
 
-            rand.setSeed(i);
+            //rand.setSeed(i);
 
-            int element = rand.nextInt(1000000);
+            int element = rand.nextInt(10000);
 
         //    System.out.println("element: " + element);
 
