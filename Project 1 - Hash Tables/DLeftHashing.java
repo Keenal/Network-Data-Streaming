@@ -72,20 +72,27 @@ public class DLeftHashing {
 
     public static void printHashTable(int[] hashTable) {
         int count = 0;
-        System.out.println("Number of flows: " + numOfEntries);
+        for(int i = 0; i < hashTable.length; i++) {
+            if(hashTable[i] != -999999999) {
+                count++;
+            }
+        }
+
+        System.out.println("Total flows: " + count);
         System.out.println("---------------");
+
         for(int i = 0; i < hashTable.length; i++) {
             if(hashTable[i] != -999999999) {
                 System.out.println("Flow ID#" + (i+1) + " = " + hashTable[i]);
-                count++;
+                
             }
             else {
                 System.out.println("Flow ID#" + (i+1) + " = " + 0);
             }
         }
+
         System.out.println("---------------");
-        System.out.println("Number of flows: " + numOfEntries);
-        System.out.println("count " + count);
+        System.out.println("Total flows: " + count);
     }
 
 

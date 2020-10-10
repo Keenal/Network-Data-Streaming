@@ -11,8 +11,8 @@
 
 3. The flow ID and the values used to calculate the hash function have been generated randomly, with a seed value specified, hence every time the program is run, a new value would be shown as output. 
 
-4. After running the program multiple times, here's the range of which the output for each algorithm will show up as: 
+4. After running the program multiple times, here's the *estimated* range of which the output for each algorithm will show up as: 
 
 4.1 multiHashing: 800 - 830
-4.2 dLeftHashing: 831 - 870
-4.3 cuckooHashing: 871 - 920
+4.2 dLeftHashing: 831 - 880
+4.3 cuckooHashing: 881 - 930
