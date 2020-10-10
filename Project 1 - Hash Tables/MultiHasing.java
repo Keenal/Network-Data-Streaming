@@ -5,7 +5,6 @@ public class MultiHasing {
     public static final int numOfHashFunction = 3; 
 
     public static int[] hashTable = new int[numOfEntries];
- //   public static int[] hashModNums = {743, 22, 347};
     public static int[] hashModNums = new int[numOfHashFunction];
 
     public static Random rand;
@@ -22,16 +21,22 @@ public class MultiHasing {
 
     }
 
-    public static void randomGen(int[] hashTable) {
-        rand = new Random();
-        for(int i = 0; i < numOfHashFunction; i++) {
-            hashModNums[i] = rand.nextInt(1000);
+    
+
+    public static void initHashTable(int[] hashTable) {
+        int i = 0; 
+        while(i < hashTable.length) {
+            hashTable[i] = -999999999; 
+            i++;
         }
     }
 
-    public static void initHashTable(int[] hashTable) {
-        for(int i = 0; i < hashTable.length; i++) {
-            hashTable[i] = -999999999; 
+    public static void randomGen(int[] hashTable) {
+        rand = new Random();
+        int i = 0;
+        while(i < numOfHashFunction) {
+            hashModNums[i] = rand.nextInt(1000);
+            i++;
         }
     }
 
@@ -65,11 +70,19 @@ public class MultiHasing {
 
     public static void printHashTable(int[] hashTable) {
         int count = 0;
+        System.out.println("Number of flows: " + numOfEntries);
+        System.out.println("---------------");
         for(int i = 0; i < hashTable.length; i++) {
             if(hashTable[i] != -999999999) {
+                System.out.println("Flow ID#" + (i+1) + " = " + hashTable[i]);
                 count++;
             }
+            else {
+                System.out.println("Flow ID#" + (i+1) + " = " + 0);
+            }
         }
+        System.out.println("---------------");
+        System.out.println("Number of flows: " + numOfEntries);
         System.out.println("count " + count);
     }
 
