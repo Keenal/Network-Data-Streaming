@@ -5,8 +5,7 @@ public class CuckooHashing {
     public static final int numOfHashFunction = 3; 
 
     public static int[] hashTable = new int[numOfEntries];
-    public static int[] hashModNums = {6136, 8281, 5906};
-    public static int[] hashValues = new int[numOfHashFunction];
+    public static int[] hashModNums = new int[numOfHashFunction];
     
     public static int counter = 0;
     public static int rec = 0;
@@ -21,36 +20,22 @@ public class CuckooHashing {
     public static void main(String[] args) {
 
 
-        for(int i=0;i<100000;i++){
-            initHashTable(hashTable);
-            randomGen(hashModNums);
-            generateNums4Table(hashTable);
+        initHashTable(hashTable);
 
-             printHashTable(hashTable);
-             if(count>maxCount){
-                 maxCount=count;
-                 b=y;
-             }
-             //System.out.println("count=" + count);
-             y++;
-        }
-        System.out.println("MaxCOunt="+maxCount + "y=" + b);
+        generateNums4ModNums(hashTable);
+
+        generateNums4Table(hashTable);
+
+        printHashTable(hashTable);
 
 
     }
 
-    public static void randomGen(int[] hashModNums){
+    public static void generateNums4ModNums(int[] hashTable) {
         rand = new Random();
-
-        for(int i=0;i<3;i++){
-            rand.setSeed(i+y);
-            
-            hashModNums[i]=rand.nextInt(10000);
-            if(y==14271){
-            System.out.print(hashModNums[i]+" ");
-            }
+        for(int i = 0; i < numOfHashFunction; i++) {
+            hashModNums[i] = rand.nextInt(1000);
         }
-        //System.out.println();
     }
 
     public static void initHashTable(int[] hashTable) {
@@ -62,25 +47,28 @@ public class CuckooHashing {
     public static void generateNums4Table(int[] hashTable) {
         rand = new Random();
         for(int i = 0; i < numOfEntries; i++) {
-            rand.setSeed(i);
+           rand.setSeed(i);
             int element = rand.nextInt(100000);
-            cuckoo(element, hashTable, -1, 0);
+            cuckoo(element, hashTable, 0, 0);
         }
     }
 
-    public static void cuckoo(int element, int[] hashTable, int idx, int cuckooSteps) {
+    public static void cuckoo(int element, int[] hashTable, int k, int cuckooSteps) {
         
         boolean checker = false;
 
+        
+        int[] hashValues = new int[numOfHashFunction];
+
+        if(cuckooSteps == cuckooStepLimit) {
+            return;
+        }
             
-            if(cuckooSteps == cuckooStepLimit) {
-                rec = 0;
-            }
 
             // calculates 3 hash values per element
             for(int j = 0; j < hashValues.length; j++) {
-                hashValues[j] = (element ^ hashModNums[j]) % hashTable.length; 
-                if(hashTable[hashValues[j]] == element && cuckooSteps!=0) {
+                hashValues[j] = (element ^ hashModNums[j]) % 1000; 
+                if(hashTable[hashValues[j]] == element && cuckooSteps==0) {
                     return;
                 }
             }
@@ -93,44 +81,33 @@ public class CuckooHashing {
                     checker = true;
                     rec = -1;
                     prevSuccess=true;
-                    cuckooSteps++;
-                    break;
+                //    cuckooSteps++;
+                    return;
                 }
 
 
 
 
             }
+            
 
             if(checker == false) {
                 int flowPlaceHolder = -1;
                 prevSuccess=false;
                 while(k < 3) {
-                    
-                    if(hashValues[k] != idx) {
-                        //System.out.println("HERE");
                         flowPlaceHolder = hashTable[hashValues[k]];
-                        cuckoo(flowPlaceHolder, hashTable, hashValues[k], cuckooSteps + 1);
+                        cuckoo(flowPlaceHolder, hashTable, k, cuckooSteps + 1);
                         if(prevSuccess==true){
-                            System.out.println("HERE");
-
                             hashTable[hashValues[k]] = element;
-                            return;
+                            break;
                          
                         }
                         rec = -1;
              
-                    }
+                    
                     k++;
-                    if(rec == -1) {
-                        break;
-                    }
-                    if(hashTable[hashValues[0]] == flowPlaceHolder || hashTable[hashValues[1]] == flowPlaceHolder || hashTable[hashValues[2]] == flowPlaceHolder) {
-                        break;
-                    }
                 }
             }
-        k = 0;
 
     }
 
@@ -141,7 +118,7 @@ public class CuckooHashing {
                 count++;
             }
         }
-        //System.out.println("count " + count);
+        System.out.println("count " + count);
     }
 
 

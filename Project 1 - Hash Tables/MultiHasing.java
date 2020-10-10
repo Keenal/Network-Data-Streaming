@@ -5,20 +5,28 @@ public class MultiHasing {
     public static final int numOfHashFunction = 3; 
 
     public static int[] hashTable = new int[numOfEntries];
-    public static int[] hashModNums = {743, 22, 347};
+ //   public static int[] hashModNums = {743, 22, 347};
+    public static int[] hashModNums = new int[numOfHashFunction];
 
     public static Random rand;
 
     public static void main(String[] args) {
 
-        
-
         initHashTable(hashTable);
+
+        randomGen(hashTable);
 
         addInTable(hashTable);
 
         printHashTable(hashTable);
 
+    }
+
+    public static void randomGen(int[] hashTable) {
+        rand = new Random();
+        for(int i = 0; i < numOfHashFunction; i++) {
+            hashModNums[i] = rand.nextInt(1000);
+        }
     }
 
     public static void initHashTable(int[] hashTable) {
@@ -33,7 +41,7 @@ public class MultiHasing {
             
             rand.setSeed(i);
 
-            int element = rand.nextInt(1000000);
+            int element = rand.nextInt(100000);
 
             int[] hashValues = new int[numOfHashFunction];
 

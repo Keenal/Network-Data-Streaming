@@ -6,22 +6,29 @@ public class DLeftHashing {
     public static final int numOfSegmentInterval = numOfEntries / 4; 
 
     public static int[] hashTable = new int[numOfEntries];
-    public static int[] hashModNums = {6163, 81, 51, 53};
+   // public static int[] hashModNums = {6163, 81, 51, 53};
+   public static int[] hashModNums = new int[numOfHashFunction];
 
     private static Random rand;
     
 
     public static void main(String[] args) {
 
-        
-        
-
         initHashTable(hashTable);
+
+        randomGen(hashTable);
 
         addInTable(hashTable);
 
         printHashTable(hashTable);
 
+    }
+
+    public static void randomGen(int[] hashTable) {
+        rand = new Random();
+        for(int i = 0; i < numOfHashFunction; i++) {
+            hashModNums[i] = rand.nextInt(1000);
+        }
     }
 
     public static void initHashTable(int[] hashTable) {
@@ -34,11 +41,9 @@ public class DLeftHashing {
         rand = new Random();
         for(int i = 0; i < numOfEntries; i++) {
 
-            //rand.setSeed(i);
+            rand.setSeed(i);
 
-            int element = rand.nextInt(10000);
-
-        //    System.out.println("element: " + element);
+            int element = rand.nextInt(100000);
 
             int[] hashValues = new int[numOfHashFunction];
 
