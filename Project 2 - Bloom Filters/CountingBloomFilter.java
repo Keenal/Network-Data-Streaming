@@ -43,18 +43,19 @@ class CountingBloomFilter {
                 if(bloomArr[hashValue] == 0) {
                     bloomArr[hashValue] = 1;
                 }
+                else if (bloomArr[hashValue] > 0) {
+                    bloomArr[hashValue] = bloomArr[hashValue] + 1;
+                }
             }
         }
     }
 
     public static void delete500() {
         for(int k = 0; k < 500; k++) {
-            rand = new Random();
-            int i = rand.nextInt(1000 - 0) + 0;
             for(int j = 0; j < numOfHashes; j++) {
-                int hashValue = (aSetArr[i] ^ hashNums[j]) % numOfBits;
-                if(bloomArr[hashValue] == 1) {
-                    bloomArr[hashValue] = 0;
+                int hashValue = (aSetArr[k] ^ hashNums[j]) % numOfBits;
+                if(bloomArr[hashValue] > 0) {
+                    bloomArr[hashValue] = bloomArr[hashValue] - 1;
                 }
             }
         }
@@ -64,11 +65,14 @@ class CountingBloomFilter {
     public static void add5000() {
         for(int k = 0; k < 500; k++) {
             rand = new Random();
-            int i = rand.nextInt(1000 - 0) + 0;
+            int element = rand.nextInt(100000000 - 0) + 0;
             for(int j = 0; j < numOfHashes; j++) {
-                int hashValue = (aSetArr[i] ^ hashNums[j]) % numOfBits;
+                int hashValue = (element ^ hashNums[j]) % numOfBits;
                 if(bloomArr[hashValue] == 0) {
                     bloomArr[hashValue] = 1;
+                }
+                else if (bloomArr[hashValue] > 0) {
+                    bloomArr[hashValue] = bloomArr[hashValue] + 1;
                 }
             }
         }
@@ -80,7 +84,7 @@ class CountingBloomFilter {
             int count = 0;
             for(int j = 0; j < numOfHashes; j++) {
                 int hashValue = (aSetArr[i] ^ hashNums[j]) % numOfBits; 
-                if(bloomArr[hashValue] == 1) {
+                if(bloomArr[hashValue] > 0) {
                     count++;
                 }
             }

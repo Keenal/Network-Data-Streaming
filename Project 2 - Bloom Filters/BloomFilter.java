@@ -23,8 +23,8 @@ class BloomFilter {
         lookUpB();
         
 
-        System.out.println(finalNumOfElementsA + " final A");
-        System.out.println(finalNumOfElementsB + " final B");
+        System.out.println("Total number of elements in Set A: " + finalNumOfElementsA);
+        System.out.println("Total number of elements in Set A: " + finalNumOfElementsB);
 
     }
 
