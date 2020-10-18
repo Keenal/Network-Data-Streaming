@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ public class CodedBloomFilter {
     static int[] bloom1 = new int[numOfFilters];
     static int[] bloom2 = new int[numOfFilters];
     static int[] bloom3 = new int[numOfFilters];
+    static int[][] codes= {{0,0,1},{0,1,0},{0,1,1},{1,0,0},{1,0,1},{1,1,0},{1,1,1}};
 
     static Random rand;
     public static void main(String[] args) {
@@ -25,7 +27,7 @@ public class CodedBloomFilter {
         addElementsInSets();
         lookUp();
 
-        System.out.println(finalCount + "count");
+        System.out.println("Correct Number of Elements: " + finalCount);
     }
 
     public static void genHashNum() {
@@ -118,10 +120,12 @@ public class CodedBloomFilter {
         
         
     }
-
+    static int setCounter=0;
     public static void lookUp() {
-        // 001
-        for(int i = 0; i < 1000; i++) {
+        
+        for(int i = 0; i < 7000; i++) {
+            List<Integer> code = new ArrayList<>(); 
+            int check=0;
             for(int k = 0; k < numOfHashes; k++) {
                 int hashValue = (arrElements.get(i) ^ hashNums[k]) % numOfFilters;
                 if(bloom1[hashValue] == 1) {
@@ -134,146 +138,42 @@ public class CodedBloomFilter {
                     countC++;
                 }
             }
-            if(countA < 7 && countB < 7 && countC == 7) {
-                finalCount++;
-            }
-            countA = 0;
-            countB = 0;
-            countC = 0;
-        }
-        // 010
-        for(int i = 1000; i < 2000; i++) {
-            for(int k = 0; k < numOfHashes; k++) {
-                int hashValue = (arrElements.get(i) ^ hashNums[k]) % numOfFilters;
-                if(bloom1[hashValue] == 1) {
-                    countA++;
-                }
-                if(bloom2[hashValue] == 1) {
-                    countB++;
-                }
-                if(bloom3[hashValue] == 1) {
-                    countC++;
-                }
-            }
-            if(countC < 7 && countB == 7 && countA < 7) {
-                finalCount++;
-            }
-            countA = 0;
-            countB = 0;
-            countC = 0;
-            
-        }
-        // 011
-        for(int i = 2000; i < 3000; i++) {
-            for(int k = 0; k < numOfHashes; k++) {
-                int hashValue = (arrElements.get(i) ^ hashNums[k]) % numOfFilters;
-                if(bloom1[hashValue] == 1) {
-                    countA++;
-                }
-                if(bloom2[hashValue] == 1) {
-                    countB++;
-                }
-                if(bloom3[hashValue] == 1) {
-                    countC++;
-                }
-            }
-            if(countC == 7 && countB == 7 && countA < 7) {
-                finalCount++;
-            }
-            countA = 0;
-            countB = 0;
-            countC = 0;
-            
-        }
 
-        // 100
-        for(int i = 3000; i < 4000; i++) {
-            for(int k = 0; k < numOfHashes; k++) {
-                int hashValue = (arrElements.get(i) ^ hashNums[k]) % numOfFilters;
-                if(bloom1[hashValue] == 1) {
-                    countA++;
-                }
-                if(bloom2[hashValue] == 1) {
-                    countB++;
-                }
-                if(bloom3[hashValue] == 1) {
-                    countC++;
+            if(countA == 7 ){
+                code.add(1);
+            }
+            else{
+                code.add(0);
+            }
+            if(countB == 7 ){
+                code.add(1);
+            }
+            else{
+                code.add(0);
+            }if(countC == 7 ){
+                code.add(1);
+            }
+            else{
+                code.add(0);
+            }
+            for(int j=0; j<code.size();j++){
+                if(code.get(j)!=codes[setCounter][j]){
+                    check=1;
                 }
             }
-            if(countC < 7 && countB < 7 && countA == 7) {
+            if(check==0){
                 finalCount++;
             }
-            countA = 0;
-            countB = 0;
-            countC = 0;
-        }
-        //101
-        for(int i = 4000; i < 5000; i++) {
-            for(int k = 0; k < numOfHashes; k++) {
-                int hashValue = (arrElements.get(i) ^ hashNums[k]) % numOfFilters;
-                if(bloom1[hashValue] == 1) {
-                    countA++;
-                }
-                if(bloom2[hashValue] == 1) {
-                    countB++;
-                }
-                if(bloom3[hashValue] == 1) {
-                    countC++;
-                }
-            }
-            if(countC == 7 && countB < 7 && countA == 7) {
-                finalCount++;
-            }
-            countA = 0;
-            countB = 0;
-            countC = 0;
-        }
 
-        //110
-        for(int i = 5000; i < 6000; i++) {
-            for(int k = 0; k < numOfHashes; k++) {
-                int hashValue = (arrElements.get(i) ^ hashNums[k]) % numOfFilters;
-                if(bloom1[hashValue] == 1) {
-                    countA++;
-                }
-                if(bloom2[hashValue] == 1) {
-                    countB++;
-                }
-                if(bloom3[hashValue] == 1) {
-                    countC++;
-                }
-            }
-            if(countC < 7 && countB == 7 && countA == 7) {
-                finalCount++;
-            }
             countA = 0;
             countB = 0;
             countC = 0;
-        }
 
-        //111
-        for(int i = 6000; i < 7000; i++) {
-            for(int k = 0; k < numOfHashes; k++) {
-                int hashValue = (arrElements.get(i) ^ hashNums[k]) % numOfFilters;
-                if(bloom1[hashValue] == 1) {
-                    countA++;
-                }
-                if(bloom2[hashValue] == 1) {
-                    countB++;
-                }
-                if(bloom3[hashValue] == 1) {
-                    countC++;
-                }
+            if(i%1000==0 && i!=0){
+                setCounter++;
             }
-            if(countC == 7 && countB == 7 && countA == 7) {
-                finalCount++;
-            }
-            countA = 0;
-            countB = 0;
-            countC = 0;
         }
     }
-
 
 
 }
