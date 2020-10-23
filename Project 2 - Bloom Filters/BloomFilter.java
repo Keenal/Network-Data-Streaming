@@ -24,7 +24,7 @@ class BloomFilter {
         
 
         System.out.println("Total number of elements in Set A: " + finalNumOfElementsA);
-        System.out.println("Total number of elements in Set A: " + finalNumOfElementsB);
+        System.out.println("Total number of elements in Set B: " + finalNumOfElementsB);
 
     }
 

@@ -19,7 +19,7 @@ class CountingBloomFilter {
         add5000();
         lookUpA();
 
-        System.out.println("Number of elements: " + finalNumOfElementsA);
+        System.out.println("Number of elements that are correct: " + finalNumOfElementsA);
 
     }
 

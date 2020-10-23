@@ -1,0 +1,2 @@
+Total number of elements in Set A: 1000
+Total number of elements in Set B: 5
