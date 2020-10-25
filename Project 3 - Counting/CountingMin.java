@@ -22,6 +22,8 @@ class CountingMin {
     static long[] c1 = new long[w];
     static long[] c2 = new long[w];
     static long[] c3 = new long[w];
+   // static long[] largestDiff = new long[IP.size()];
+   static List<Long> largestDiff = new ArrayList<Long>();
     static Random rand;
     static long error = 0;
     static long diff = 0;
@@ -34,7 +36,12 @@ class CountingMin {
         genHashNum();
         insert();
         querying();
+    //    System.out.println(largestDiff.size() + " " + IP.size());
         System.out.println(" error: " + diff / 10000);
+        for(int i = 0; i < 100; i++) {
+            System.out.println("flow id# " + i + " " + IP.get(i) + " true size: " + value.get(i) 
+                                + " estimated size: " + largestDiff.get(i));
+        }
             
     }
 
@@ -49,7 +56,6 @@ class CountingMin {
              //   IP.add(input.next());
                 String[] splitIP = input.next().split("\\.");
               //  System.out.println(Arrays.toString(splitIP));
-             
                
                 long x = (Integer.parseInt(splitIP[0])) * 255;
                 long y = Integer.parseInt(splitIP[1]);
@@ -95,6 +101,7 @@ class CountingMin {
             long hashValue3 = (IP.get(i) ^ hashNums[2]) % w;
             long minX = Math.min(Math.min(c1[(int) hashValue1], c2[(int) hashValue2]), c3[(int) hashValue3]);
             diff = diff + (minX - Integer.parseInt(value.get(i)));
+            largestDiff.add(minX);
             
         }
     }
