@@ -18,12 +18,11 @@ class CountingSketch {
     static int numOfHashes = 3;
     static String numOfFlows = "";
     static int w = 3000;
-    static int[] hashNums = new int[numOfHashes];
+    static long[] hashNums = new long[numOfHashes];
     static long[] c1 = new long[w];
     static long[] c2 = new long[w];
     static long[] c3 = new long[w];
     static long[] median = new long[3];
-   // static long[] largestDiff = new long[IP.size()];
    static List<Long> largestDiff = new ArrayList<Long>();
     static Random rand;
     static long error = 0;
@@ -31,20 +30,10 @@ class CountingSketch {
     
     public static void main(String[] args) throws IOException {
         readFromFile();
-     //   System.out.println(IP.size() + " IP size");
-     //   System.out.println(value.size() + " value size");
-     //   int flowNums = Integer.parseInt(numOfFlows);
-     //   genHashNum();
+        genHashNum();
         insert();
-    //    querying();
-    //    System.out.println(largestDiff.size() + " " + IP.size());
+        querying();
         System.out.println(" error: " + diff / 10000);
-        /*
-        for(int i = 0; i < 100; i++) {
-            System.out.println("flow id# " + i + " " + IP.get(i) + " true size: " + value.get(i) 
-                                + " estimated size: " + largestDiff.get(i));
-        }
-        */
             
     }
 
@@ -56,22 +45,13 @@ class CountingSketch {
         int count = 1;
         while (input.hasNext()) {
             if(count % 2 != 0) {
-             //   IP.add(input.next());
                 String[] splitIP = input.next().split("\\.");
-              //  System.out.println(Arrays.toString(splitIP));
                
                 long x = (Integer.parseInt(splitIP[0])) * 255;
                 long y = Integer.parseInt(splitIP[1]);
                 long a = Integer.parseInt(splitIP[2]);
                 long b = Integer.parseInt(splitIP[3]);
-                long z = ((x + y) * 255 + a) * 255 + b ;
-                z = z % 10;
-                if(z >= 5) {
-                    z = z * 1;
-                }
-                else {
-                    z = z * -1;
-                }
+                long z = ((x + y) * 255 + a) * 255 + b;
 
                 IP.add(z);
                 
@@ -83,84 +63,149 @@ class CountingSketch {
         count++;
         }
 
-     //   System.out.println(IP.toString());
     }
 
-    /*
+    
     public static void genHashNum() {
         
         for(int i = 0; i < numOfHashes; i++) {
             rand = new Random();
-            hashNums[i] = rand.nextInt(100000000 + 100000000) - 100000000; // (upperbound - lowerbound) + upperbound
+            hashNums[i] = rand.nextInt(1000000000  - 0) + 1000000000; // (upperbound - lowerbound) + upperbound
         }
     }
-    */
+    
 
     public static void insert() {
         for(int i = 0; i < IP.size(); i++) {
-            
-            for(int j = 0; j < numOfHashes; j++) {
-                rand = new Random();
-                hashNums[j] = rand.nextInt(100000000 + 100000000) - 100000000; // (upperbound - lowerbound) + upperbound
-            }
-            long hashValue1 = (Math.abs(IP.get(i)) ^ Math.abs(hashNums[0])) % w;
-            long hashValue1New = (IP.get(i) ^ hashNums[0]) % w;
-            if(hashValue1New < 0) {
-                c1[(int) hashValue1] = c1[(int) hashValue1] + Integer.parseInt(value.get(i));
-            }
-            else {
-                c1[(int) hashValue1] = c1[(int) hashValue1] - Integer.parseInt(value.get(i));
-            }
 
-            long hashValue2 = (Math.abs(IP.get(i)) ^ Math.abs(hashNums[1])) % w;
-            long hashValue2New = (IP.get(i) ^ hashNums[1]) % w;
-            if(hashValue2New < 0) {
-                c2[(int) hashValue2] = c2[(int) hashValue2] + Integer.parseInt(value.get(i));
-            }
-            else {
-                c2[(int) hashValue2] = c2[(int) hashValue2] - Integer.parseInt(value.get(i));
-            }
-            
-            long hashValue3 = (Math.abs(IP.get(i)) ^ Math.abs(hashNums[2])) % w;
-            long hashValue3New = (IP.get(i) ^ hashNums[2]) % w;
-            if(hashValue3New < 0) {
-                c3[(int) hashValue3] = c3[(int) hashValue3] + Integer.parseInt(value.get(i));
-            }
-            else {
-                c3[(int) hashValue3] = c3[(int) hashValue3] - Integer.parseInt(value.get(i));
-            }
+                long hash1 = (IP.get(i) ^ hashNums[0]);
+                String binary = complement(Long.toBinaryString(hash1));
+                if(binary.charAt(1) == '1') {
+                    long hashMod1 = (IP.get(i) ^ hashNums[0]) % w;
+                    c1[(int) hashMod1] = c1[(int) hashMod1] + Integer.parseInt(value.get(i));
+                }
+                else {
+                    long hashMod1 = (IP.get(i) ^ hashNums[0]) % w;
+                    c1[(int) hashMod1] = c1[(int) hashMod1] - Integer.parseInt(value.get(i));
+                }
 
-        //    int i1 =(int) ((IP.get(i) ^ hashNums[0]) % w);
-        //    int i2 = (int) ((IP.get(i) ^ hashNums[1]) % w);
-        //    int i3 = (int) ((IP.get(i) ^ hashNums[2]) % w);
+                long hash2 = (IP.get(i) ^ hashNums[1]);
+                binary = complement(Long.toBinaryString(hash2));
+                if(binary.charAt(1) == '1') {
+                    long hashMod2 = (IP.get(i) ^ hashNums[1]) % w;
+                    c2[(int) hashMod2] = c2[(int) hashMod2] + Integer.parseInt(value.get(i));
+                }
+                else {
+                    long hashMod2 = (IP.get(i) ^ hashNums[1]) % w;
+                    c2[(int) hashMod2] = c2[(int) hashMod2] - Integer.parseInt(value.get(i));
+                }
 
-            median[0]= c1[(int) hashValue1New];
-            median[1]= c2[(int) hashValue2New];
-            median[2]= c3[(int) hashValue3New];
-            Arrays.sort(median);
-            long med = median[1];
-            diff = diff + Math.abs(med - Integer.parseInt(value.get(i)));
+                long hash3 = (IP.get(i) ^ hashNums[2]);
+                binary = complement(Long.toBinaryString(hash3));
+                if(binary.charAt(1) == '1') {
+                    long hashMod3 = (IP.get(i) ^ hashNums[2]) % w;
+                    c3[(int) hashMod3] = c3[(int) hashMod3] + Integer.parseInt(value.get(i));
+                }
+                else {
+                    long hashMod3 = (IP.get(i) ^ hashNums[2]) % w;
+                    c3[(int) hashMod3] = c3[(int) hashMod3] - Integer.parseInt(value.get(i));
+                }
             
         }
             
     }
 
-    /*
+    
     public static void querying() {
         for(int i = 0; i < IP.size(); i++) {
             int i1 =(int) ((IP.get(i) ^ hashNums[0]) % w);
             int i2 = (int) ((IP.get(i) ^ hashNums[1]) % w);
             int i3 = (int) ((IP.get(i) ^ hashNums[2]) % w);
-            median[0]= c1[i1];
-            median[1]= c2[i2];
-            median[2]= c3[i3];
+            long hash1 = (IP.get(i) ^ hashNums[0]);
+            String binary = complement(Long.toBinaryString(hash1));
+            if(binary.charAt(1) == '0') {
+                median[0]= Math.abs(c1[i1]);
+            }
+            else {
+                median[0]= (c1[i1]);
+            }
+
+            long hash2 = (IP.get(i) ^ hashNums[1]);
+            binary = complement(Long.toBinaryString(hash2));
+            if(binary.charAt(1) == '0') {
+                median[1]= Math.abs(c2[i2]);
+            }
+            else {
+                median[1]= c2[i2];
+            }
+
+            long hash3 = (IP.get(i) ^ hashNums[2]);
+            binary = complement(Long.toBinaryString(hash3));
+            if(binary.charAt(1) == '0') {
+                median[2]= Math.abs(c3[i3]);
+            }
+            else {
+                median[2]= (c3[i3]);
+            }
+            
+
             Arrays.sort(median);
             long med = median[1];
             diff = diff + Math.abs(med - Integer.parseInt(value.get(i)));
-        //    largestDiff.add(minX);
             
         }
     }
-    */
+
+    public static String complement(String bin) 
+    { 
+        int n = bin.length(); 
+        int i; 
+  
+        String ones = "", twos = ""; 
+        ones = twos = ""; 
+  
+        // for ones complement flip every bit 
+        for (i = 0; i < n; i++) 
+        { 
+            ones += flip(bin.charAt(i)); 
+        } 
+  
+        // for two's complement go from right to left in 
+        // ones complement and if we get 1 make, we make 
+        // them 0 and keep going left when we get first 
+        // 0, make that 1 and go out of loop 
+        twos = ones; 
+        for (i = n - 1; i >= 0; i--) 
+        { 
+            if (ones.charAt(i) == '1') 
+            { 
+                twos = twos.substring(0, i) + '0' + twos.substring(i + 1); 
+            }  
+            else
+            { 
+                twos = twos.substring(0, i) + '1' + twos.substring(i + 1); 
+                break; 
+            } 
+        } 
+  
+        // If No break : all are 1 as in 111 or 11111; 
+        // in such case, add extra 1 at beginning 
+        if (i == -1) 
+        { 
+            twos = '1' + twos; 
+        } 
+  
+        //System.out.println("1's complement: " + ones); 
+      //  System.out.println("2's complement: " + twos); 
+
+      return twos;
+    } 
+
+    public static char flip(char c) 
+    { 
+        return (c == '0') ? '1' : '0'; 
+    } 
+    
+    
 
 }
