@@ -7,9 +7,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
 
 class CountingMin {
     
@@ -22,26 +27,36 @@ class CountingMin {
     static long[] c1 = new long[w];
     static long[] c2 = new long[w];
     static long[] c3 = new long[w];
-   // static long[] largestDiff = new long[IP.size()];
-   static List<Long> largestDiff = new ArrayList<Long>();
+    static ArrayList<String> alist = new ArrayList<String>();
+    static TreeMap<Long, String> diffFlowID = new TreeMap<Long, String>(Collections.reverseOrder());
+    static TreeMap<Long, Long> diffTrueSize = new TreeMap<Long, Long>(Collections.reverseOrder());
     static Random rand;
     static long error = 0;
     static long diff = 0;
     
     public static void main(String[] args) throws IOException {
         readFromFile();
-     //   System.out.println(IP.size() + " IP size");
-     //   System.out.println(value.size() + " value size");
-     //   int flowNums = Integer.parseInt(numOfFlows);
         genHashNum();
         insert();
         querying();
-    //    System.out.println(largestDiff.size() + " " + IP.size());
-        System.out.println(" error: " + diff / 10000);
-        for(int i = 0; i < 100; i++) {
-            System.out.println("flow id# " + i + " " + IP.get(i) + " true size: " + value.get(i) 
-                                + " estimated size: " + largestDiff.get(i));
-        }
+      
+        System.out.println("Average Error: " + diff / 10000);
+
+        Set set = diffTrueSize.entrySet(); 
+        Set set2 = diffFlowID.entrySet(); 
+        Iterator k = set2.iterator();
+        Iterator j = set.iterator(); 
+        int counter = 0;
+        // Traverse map and print elements 
+        while (j.hasNext() && counter < 100 && k.hasNext()) { 
+            Map.Entry me = (Map.Entry)j.next(); 
+            Map.Entry me2 = (Map.Entry)k.next(); 
+            System.out.print("Flow ID: " + me2.getValue() + "      "); 
+            System.out.print("Estimated Size: " + me.getKey() + "      "); 
+            System.out.println("True Size: " + me.getValue()); 
+            
+            counter++;
+        } 
             
     }
 
@@ -53,15 +68,16 @@ class CountingMin {
         int count = 1;
         while (input.hasNext()) {
             if(count % 2 != 0) {
-             //   IP.add(input.next());
-                String[] splitIP = input.next().split("\\.");
-              //  System.out.println(Arrays.toString(splitIP));
+                String temp = input.next();
+                alist.add(temp);
+                String[] splitIP = temp.split("\\.");
                
                 long x = (Integer.parseInt(splitIP[0])) * 255;
                 long y = Integer.parseInt(splitIP[1]);
                 long a = Integer.parseInt(splitIP[2]) ;
                 long b = Integer.parseInt(splitIP[3]);
-                long z = ((x + y) * 255 + a) * 255 + b ;
+                long z = ((x + y) * 255 + a) * 255 + b;
+
                 IP.add(z);
                 
             }
@@ -72,7 +88,7 @@ class CountingMin {
         count++;
         }
 
-     //   System.out.println(IP.toString());
+     
     }
 
     public static void genHashNum() {
@@ -101,7 +117,8 @@ class CountingMin {
             long hashValue3 = (IP.get(i) ^ hashNums[2]) % w;
             long minX = Math.min(Math.min(c1[(int) hashValue1], c2[(int) hashValue2]), c3[(int) hashValue3]);
             diff = diff + (minX - Integer.parseInt(value.get(i)));
-            largestDiff.add(minX);
+            diffFlowID.put(minX, alist.get(i));
+            diffTrueSize.put(minX, Long.parseLong(value.get(i)));
             
         }
     }

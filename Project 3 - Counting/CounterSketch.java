@@ -7,11 +7,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
 
-class CountingSketch {
+class CounterSketch {
     
     static List<String> value = new ArrayList<String>();
     static List<Long> IP = new ArrayList<Long>();
@@ -24,6 +28,9 @@ class CountingSketch {
     static long[] c3 = new long[w];
     static long[] median = new long[3];
    static List<Long> largestDiff = new ArrayList<Long>();
+   static ArrayList<String> alist = new ArrayList<String>();
+   static TreeMap<Long, String> diffFlowID = new TreeMap<Long, String>(Collections.reverseOrder());
+   static TreeMap<Long, Long> diffTrueSize = new TreeMap<Long, Long>(Collections.reverseOrder());
     static Random rand;
     static long error = 0;
     static long diff = 0;
@@ -33,7 +40,23 @@ class CountingSketch {
         genHashNum();
         insert();
         querying();
-        System.out.println(" error: " + diff / 10000);
+        System.out.println("Average Error: " + diff / 10000);
+
+        Set set = diffTrueSize.entrySet(); 
+        Set set2 = diffFlowID.entrySet(); 
+        Iterator k = set2.iterator();
+        Iterator j = set.iterator(); 
+        int counter = 0;
+        // Traverse map and print elements 
+        while (j.hasNext() && counter < 100 && k.hasNext()) { 
+            Map.Entry me = (Map.Entry)j.next(); 
+            Map.Entry me2 = (Map.Entry)k.next(); 
+            System.out.print("Flow ID: " + me2.getValue() + "      "); 
+            System.out.print("Estimated Size: " + me.getKey() + "      "); 
+            System.out.println("True Size: " + me.getValue()); 
+            
+            counter++;
+        }
             
     }
 
@@ -45,13 +68,15 @@ class CountingSketch {
         int count = 1;
         while (input.hasNext()) {
             if(count % 2 != 0) {
-                String[] splitIP = input.next().split("\\.");
+                String temp = input.next();
+                alist.add(temp);
+                String[] splitIP = temp.split("\\.");
                
                 long x = (Integer.parseInt(splitIP[0])) * 255;
                 long y = Integer.parseInt(splitIP[1]);
                 long a = Integer.parseInt(splitIP[2]);
                 long b = Integer.parseInt(splitIP[3]);
-                long z = ((x + y) * 255 + a) * 255 + b;
+                long z = ((x + y) * 255 + a) * 255 + b + 10000000;
 
                 IP.add(z);
                 
@@ -70,7 +95,7 @@ class CountingSketch {
         
         for(int i = 0; i < numOfHashes; i++) {
             rand = new Random();
-            hashNums[i] = rand.nextInt(1000000000  - 0) + 1000000000; // (upperbound - lowerbound) + upperbound
+            hashNums[i] = Math.abs(rand.nextInt(1000000000 - 0) + 1000000000) ; // (upperbound - lowerbound) + upperbound
         }
     }
     
@@ -152,6 +177,8 @@ class CountingSketch {
             Arrays.sort(median);
             long med = median[1];
             diff = diff + Math.abs(med - Integer.parseInt(value.get(i)));
+            diffFlowID.put(med, alist.get(i));
+            diffTrueSize.put(med, Long.parseLong(value.get(i)));
             
         }
     }

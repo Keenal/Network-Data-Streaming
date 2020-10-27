@@ -15,7 +15,7 @@ public class ActiveCounter {
         
         decimalToBinary();
 
-        System.out.println("cnA: " + cnA + " ceA: " + ceA);
+        System.out.println("Final Value of Active Counter: " + Math.pow(2, ce) * cn);
     }
 
     private static void decimalToBinary() {
