@@ -27,7 +27,25 @@ public class VirtualBitmap {
         countB();
         calculate();
 
-        System.out.println("BCount: " + BCount);
+        System.out.println("Program ran correctly! Please see the attached PDF for the figure.");
+
+    //    System.out.println("BCount: " + BCount);
+
+        /*
+        for(String n : numOfElements) {
+            System.out.println(n);
+        }
+        */
+
+        /*
+
+        for(double m : estimateArr) {
+            System.out.println(m);
+        }
+
+        */
+
+
     }
 
     public static void readFromFile() throws FileNotFoundException {
