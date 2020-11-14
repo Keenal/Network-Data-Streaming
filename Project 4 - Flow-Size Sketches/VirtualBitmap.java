@@ -27,7 +27,7 @@ public class VirtualBitmap {
         countB();
         calculate();
 
-        System.out.println("Program ran correctly! Please see the attached PDF for the figure.");
+        
 
     //    System.out.println("BCount: " + BCount);
 
@@ -44,6 +44,8 @@ public class VirtualBitmap {
         }
 
         */
+
+        System.out.println("Program ran correctly! Please see the attached PDF for the figure.");
 
 
     }
