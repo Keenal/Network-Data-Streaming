@@ -33,8 +33,8 @@ class CountingMinSampling {
     static Random rand;
     static double error = 0.0;
     static double diff = 0.0;
-    static double p = 0.68;
-    static int maxRand = 214785395;
+    static double p = 0.3;
+    static int maxRand = Integer.MAX_VALUE;
     
     public static void main(String[] args) throws IOException {
         readFromFile();
@@ -42,7 +42,7 @@ class CountingMinSampling {
         insert();
         querying();
       
-        System.out.println("Average Error: " + diff / 10000);
+        System.out.println("P:" + p + " Average Error: " + diff / 10000);
 
         Set set = diffTrueSize.entrySet(); 
         Set set2 = diffFlowID.entrySet(); 
@@ -102,20 +102,19 @@ class CountingMinSampling {
 
     public static void insert() {
         for(int i = 0; i < IP.size(); i++) {
-            long hashValue1 = (IP.get(i) ^ hashNums[0]) % w;
-            long hashValue2 = (IP.get(i) ^ hashNums[1]) % w;
-            long hashValue3 = (IP.get(i) ^ hashNums[2]) % w;
-            if(p * maxRand > hashValue1) {
-                c1[(int) hashValue1] = c1[(int) hashValue1] + Integer.parseInt(value.get(i));
+            int x = Integer.parseInt(value.get(i));
+            
+            for(int j = 0; j < x; j++) {
+                if(p * maxRand > rand.nextInt(Integer.MAX_VALUE)) {
+                    long hashValue1 = (IP.get(i) ^ hashNums[0]) % w;
+                    long hashValue2 = (IP.get(i) ^ hashNums[1]) % w;
+                    long hashValue3 = (IP.get(i) ^ hashNums[2]) % w;
+                    c1[(int) hashValue1] = c1[(int) hashValue1] + 1;
+                    c2[(int) hashValue2] = c2[(int) hashValue2] + 1;
+                    c3[(int) hashValue3] = c3[(int) hashValue3] + 1;
+                }
             }
-
-            if(p * maxRand > hashValue2) {
-                c2[(int) hashValue2] = c2[(int) hashValue2] + Integer.parseInt(value.get(i));
-            }
-
-            if(p * maxRand > hashValue3) {
-                c3[(int) hashValue3] = c3[(int) hashValue3] + Integer.parseInt(value.get(i));
-            }
+            
             
         }
             
@@ -126,7 +125,7 @@ class CountingMinSampling {
             long hashValue1 = (IP.get(i) ^ hashNums[0]) % w;
             long hashValue2 = (IP.get(i) ^ hashNums[1]) % w;
             long hashValue3 = (IP.get(i) ^ hashNums[2]) % w;
-            double minX = p * Math.min(Math.min(c1[(int) hashValue1], c2[(int) hashValue2]), c3[(int) hashValue3]);
+            double minX = Math.min(Math.min(c1[(int) hashValue1], c2[(int) hashValue2]), c3[(int) hashValue3]) / p;
             diff = diff + (minX - Integer.parseInt(value.get(i)));
             diffFlowID.put(minX, alist.get(i));
             diffTrueSize.put(minX, Long.parseLong(value.get(i)));
